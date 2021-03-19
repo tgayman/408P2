@@ -4,10 +4,11 @@ class Permutations{
 
     Hashmap<String, ArrayList<String>> graphMap = new HashMap();
     Hashmap<String, int> usesMap = new HashMap();
+    int T_SUPPORT = 3;
+    double T_CONFIDENCE = 0.65;
 
     public static void main(String [] args){
-        int T_SUPPORT = 3;
-        double T_CONFIDENCE = 0.65;
+
         //with hashmap from Pi.java, calculate support and confidence for all permutations
         //return those whose values exceed the thresholds
 
@@ -46,7 +47,7 @@ class Permutations{
         return confidence;
     }
 
-    public void findBugs() {
+    public void permute() {
         Set<String> func = usesMap.keySet();
         ArrayList<String> functions = new ArrayList();
         Iterator<String> iterator = func.iterator();
@@ -55,11 +56,41 @@ class Permutations{
         }
 
         for (int i = 0; i <= functions.size(); i++) {
-            for (int j = 0; j <= functions.size(); j++) {
+            for (int j = i + 1; j <= functions.size(); j++) {
                 if (i == j) continue;
-                ArrayList<String> set1 = {}
+                ArrayList<String> set1 = {functions.get(i), functions.get(j)};
+                ArrayList<String> set2 = {functions.get(i)};
+                double confidence = calculateConfidence(set1, set2);
+                if (confidence > T_CONFIDENCE) {
+                    //potential bug, check support
+                    int support = calculateSupport(set1.get(0), set1.get(1));
+                    if (support > T_SUPPORT) {
+                        //bug found, send data to findBugs()
+                        findBugs(set1, support, confidence);
+                    }
+                }
             }
         }
     }
+
+    public void findBugs(ArrayList<String> set1, int support, double confidence) {
+        //find out where one function in the set is being called without the other
+        Iterator iterator = graphMap.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry scope = (Map.Entry)iterator.next();
+            ArrayList<String> calls = scope.getValue();
+            if (calls.contains(set1.get(0)) && !calls.contains(set1.get(1))) {
+                System.out.println("bug: " + set1.get(0) + " in " + scope.getKey()
+                        + ", pair: " + set1.toString() + ", support: " + support
+                        + ", confidence: " + confidence*100 + "%\n");
+            }
+            else if (!calls.contains(set1.get(0)) && calls.contains(set1.get(1))) {
+                System.out.println("bug: " + set1.get(1) + " in " + scope.getKey()
+                        + ", pair: " + set1.toString() + ", support: " + support
+                        + ", confidence: " + confidence*100 + "%\n");
+            }
+        }
+    }
+
 
 }
