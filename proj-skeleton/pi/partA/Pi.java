@@ -15,6 +15,19 @@ class Pi {
     public static HashMap<String, Integer> usesMap = new HashMap<>();
 
     public static void main(String[] args) {
+
+        int t_support = 3;
+        int t_confidence = 65;
+
+        if(args.length == 4) {
+            t_support = Integer.valueOf(args[2]);
+            t_confidence = Integer.valueOf(args[3]);
+        }
+        else if(args.length != 2){
+            printUsageMessage();
+            return;
+        }
+
         try {
             File graph = new File(args[0]);
             Scanner reader = new Scanner(graph);
@@ -65,6 +78,11 @@ class Pi {
     //helper method for main()
     private static boolean isScopeHeader(String line) {
         return (line.length() > 1) && (line.substring(0, 4).equals("Call")) && (!line.contains("null function"));
+    }
+
+    private static void printUsageMessage(){
+        System.out.println("Run pipair.sh with args <example.bc>, or <example.bc> <T_support> <T_confidence>");
+        System.out.println("Default: T_support=3, T_confidece=65");
     }
 
     //for testing only
