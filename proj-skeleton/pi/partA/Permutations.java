@@ -2,10 +2,17 @@ import java.util.*;
 
 class Permutations{
 
-    Hashmap<String, ArrayList<String>> graphMap = new HashMap();
-    Hashmap<String, int> usesMap = new HashMap();
-    private final int T_SUPPORT = 3;
-    private final double T_CONFIDENCE = 0.65;
+    private HashMap<String, ArrayList<String>> graphMap;
+    private HashMap<String, Integer> usesMap;
+    private final int T_SUPPORT;
+    private final double T_CONFIDENCE;
+
+    public Permutations(HashMap<String, ArrayList<String>> graph, HashMap<String, Integer> uses, int support, double confidence) {
+        graphMap = graph;
+        usesMap = uses;
+        T_SUPPORT = support;
+        T_CONFIDENCE = confidence;
+    }
 
     /**
      * Method to calculate the support of a pair of functions
@@ -18,7 +25,7 @@ class Permutations{
         Iterator iterator = graphMap.entrySet().iterator();
         while (iterator.hasNext()) {
             Map.Entry scope = (Map.Entry)iterator.next();
-            ArrayList<String> calls = scope.getValue();
+            ArrayList<String> calls = (ArrayList<String>) scope.getValue();
             if (calls.contains(func1) && calls.contains(func2))
                 count++;
         }
@@ -31,7 +38,7 @@ class Permutations{
      * @return int support
      */
     public int countOccurences(String func) {
-        return usesMap.getValue(func);
+        return usesMap.get(func);
     }
 
     /**
@@ -70,7 +77,7 @@ class Permutations{
         Set<String> func = usesMap.keySet();
         ArrayList<String> functions = new ArrayList();
         Iterator<String> iterator = func.iterator();
-        while (iterator.hasNext) {
+        while (iterator.hasNext()) {
             functions.add(iterator.next());
         }
 
@@ -79,8 +86,8 @@ class Permutations{
             for (int j = i + 1; j < functions.size(); j++) {
                 if (i == j) continue;
                 //create sets, one pair and one individual
-                ArrayList<String> set1 = {functions.get(i), functions.get(j)};
-                ArrayList<String> set2 = {functions.get(i)};
+                ArrayList<String> set1 = new ArrayList<>(List.of(functions.get(i), functions.get(j)));
+                ArrayList<String> set2 = new ArrayList<>(List.of(functions.get(i)));
                 //calculate confidence
                 double confidence = calculateConfidence(set1, set2);
                 if (confidence > T_CONFIDENCE) {
@@ -109,7 +116,7 @@ class Permutations{
         while (iterator.hasNext()) {
             //find which scope contains the bug
             Map.Entry scope = (Map.Entry)iterator.next();
-            ArrayList<String> calls = scope.getValue();
+            ArrayList<String> calls = (ArrayList<String>) scope.getValue();
             //checking first function in pair
             if (calls.contains(set1.get(0)) && !calls.contains(set1.get(1))) {
                 System.out.println("bug: " + set1.get(0) + " in " + scope.getKey()

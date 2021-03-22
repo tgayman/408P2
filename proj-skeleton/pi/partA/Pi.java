@@ -13,15 +13,14 @@ import java.util.HashMap;
 class Pi {
     public static HashMap<String, ArrayList<String>> graphMap = new HashMap<>();
     public static HashMap<String, Integer> usesMap = new HashMap<>();
+    public static int t_support = 3;
+    public static double t_confidence = 0.65;
 
     public static void main(String[] args) {
 
-        int t_support = 3;
-        int t_confidence = 65;
-
         if(args.length == 4) {
             t_support = Integer.valueOf(args[2]);
-            t_confidence = Integer.valueOf(args[3]);
+            t_confidence = Double.valueOf(args[3]);
         }
         else if(args.length != 2){
             printUsageMessage();
@@ -36,7 +35,7 @@ class Pi {
             while (reader.hasNextLine()) {
                 String line = reader.nextLine();
                 //uncomment below to see call graph
-                //System.out.println(line);
+                System.out.println(line);
 
                 if (isScopeHeader(line)) {
                     readToScope = true;
@@ -61,9 +60,14 @@ class Pi {
         } catch (FileNotFoundException e) {
             System.out.println("File not found");
         }
+
         //uncomment below to see each hashMap
         //printUsesMap();
         //printGraphMap();
+
+        Permutations P = new Permutations(graphMap, usesMap, t_support, t_confidence);
+        P.permute();
+
 
     }
 
@@ -73,6 +77,10 @@ class Pi {
 
     public static HashMap<String, ArrayList<String>> getGraphMap(){
         return graphMap;
+    }
+
+    public static int getTSupport(){
+        return t_support;
     }
 
     //helper method for main()
@@ -87,7 +95,7 @@ class Pi {
 
     //for testing only
     public static void printUsesMap() {
-        System.out.println("printing uses HashMap");
+        System.out.println("printing Uses HashMap");
         for (String name : usesMap.keySet()) {
             String key = name.toString();
             String val = usesMap.get(name).toString();
