@@ -38,7 +38,7 @@ class Permutations{
      * @return int support
      */
     public int countOccurences(String func) {
-        return usesMap.get(func);
+        return usesMap.get(func) - 1;
     }
 
     /**
@@ -60,7 +60,10 @@ class Permutations{
         if (set2.size() == 1) set2Support = countOccurences(set2.get(0));
         else if (set2.size() == 2) set2Support = calculateSupport(set2.get(0), set2.get(1));
 
-        double confidence = set1Support / set2Support;
+        if(set2Support == 0){
+            return 0.0;
+        }
+        double confidence = (double)set1Support / (double)set2Support;
 
         return confidence;
     }
@@ -74,11 +77,9 @@ class Permutations{
      */
     public void permute() {
         //build arraylist of all functions for easier iteration
-        Set<String> func = usesMap.keySet();
         ArrayList<String> functions = new ArrayList();
-        Iterator<String> iterator = func.iterator();
-        while (iterator.hasNext()) {
-            functions.add(iterator.next());
+        for (String funcName : usesMap.keySet()) {
+            functions.add(funcName);
         }
 
         //find all permutations of function pairs
@@ -90,12 +91,17 @@ class Permutations{
                 ArrayList<String> set2 = new ArrayList<>(List.of(functions.get(i)));
                 //calculate confidence
                 double confidence = calculateConfidence(set1, set2);
-                if (confidence > T_CONFIDENCE) {
+                if(confidence == 0.0){
+                    continue;
+                }
+                if (confidence >= T_CONFIDENCE) {
                     //potential bug, calculate support
                     int support = calculateSupport(set1.get(0), set1.get(1));
-                    if (support > T_SUPPORT) {
+                    if (support >= T_SUPPORT) {
                         //bug found, send data to findBugs()
+                        System.out.println("findBugs inputs: " + set1.toString() + " " + support + " " + confidence);
                         findBugs(set1, support, confidence);
+
                     }
                 }
             }
@@ -124,11 +130,11 @@ class Permutations{
                         + ", confidence: " + confidence*100 + "%\n");
             }
             //checking second function in pair
-            else if (!calls.contains(set1.get(0)) && calls.contains(set1.get(1))) {
-                System.out.println("bug: " + set1.get(1) + " in " + scope.getKey()
-                        + ", pair: " + set1.toString() + ", support: " + support
-                        + ", confidence: " + confidence*100 + "%\n");
-            }
+//            else if (!calls.contains(set1.get(0)) && calls.contains(set1.get(1))) {
+//                System.out.println("bug: " + set1.get(1) + " in " + scope.getKey()
+//                        + ", pair: " + set1.toString() + ", support: " + support
+//                        + ", confidence: " + confidence*100 + "%\n");
+//            }
         }
     }
 

@@ -62,13 +62,28 @@ class Pi {
         }
 
         //uncomment below to see each hashMap
-        //printUsesMap();
-        //printGraphMap();
+        printUsesMap();
+        printGraphMap();
 
         Permutations P = new Permutations(graphMap, usesMap, t_support, t_confidence);
         P.permute();
+        System.out.println("testing support");
+        System.out.println("Support A,B = " + P.calculateSupport("A", "B"));
+        System.out.println("Support A,C = " + P.calculateSupport("A", "C"));
+        System.out.println("Support A,D = " + P.calculateSupport("A", "D"));
+        System.out.println("Support B,C = " + P.calculateSupport("B", "C"));
+        System.out.println("Support B,D = " + P.calculateSupport("B", "D"));
+        System.out.println("Support C,D = " + P.calculateSupport("C", "D"));
+        System.out.println("");
 
-
+        System.out.println("testing confidence");
+        ArrayList<String> ListA = new ArrayList();
+        ArrayList<String> ListB = new ArrayList();
+        ListA.add("A");
+        ListA.add("B");
+        ListB.add("A");
+        
+        System.out.println("Confidence A,B = " + P.calculateConfidence(ListA, ListB));
     }
 
     public static HashMap<String, Integer> getUsesMap(){
