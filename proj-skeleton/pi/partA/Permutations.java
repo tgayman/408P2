@@ -69,7 +69,7 @@ class Permutations{
     }
 
     /**
-     * Method to locate potential bugs in the program,
+     * Methods to locate potential bugs in the program,
      * by calculating the support and confidence for all pairs
      * of functions and comparing them to the threshold values
      *
@@ -90,20 +90,23 @@ class Permutations{
                 ArrayList<String> set1 = new ArrayList<>(List.of(functions.get(i), functions.get(j)));
                 ArrayList<String> set2 = new ArrayList<>(List.of(functions.get(i)));
                 //calculate confidence
-                double confidence = calculateConfidence(set1, set2);
-                if(confidence == 0.0){
-                    continue;
-                }
-                if (confidence >= T_CONFIDENCE) {
-                    //potential bug, calculate support
-                    int support = calculateSupport(set1.get(0), set1.get(1));
-                    if (support >= T_SUPPORT) {
-                        //bug found, send data to findBugs()
-                        System.out.println("findBugs inputs: " + set1.toString() + " " + support + " " + confidence);
-                        findBugs(set1, support, confidence);
+                identifyBugs(set1, set2);
+                set2 = new ArrayList<>(List.of(functions.get(j)));
+                identifyBugs(set1, set2);
+            }
+        }
+    }
 
-                    }
-                }
+    public void identifyBugs(ArrayList<String> set1, ArrayList<String> set2) {
+        double confidence = calculateConfidence(set1, set2);
+        if (confidence == 0.0) continue;
+        if (confidence >= T_CONFIDENCE) {
+            //potential bug, calculate support
+            int support = calculateSupport(set1.get(0), set1.get(1));
+            if (support >= T_SUPPORT) {
+                //bug found, send data to findBugs()
+                System.out.println("findBugs inputs: " + set1.toString() + " " + support + " " + confidence);
+                findBugs(set1, support, confidence);
             }
         }
     }
