@@ -99,7 +99,7 @@ class Permutations{
 
     public void identifyBugs(ArrayList<String> set1, ArrayList<String> set2) {
         double confidence = calculateConfidence(set1, set2);
-        if (confidence == 0.0) continue;
+        if (confidence == 0.0) return;
         if (confidence >= T_CONFIDENCE) {
             //potential bug, calculate support
             int support = calculateSupport(set1.get(0), set1.get(1));
