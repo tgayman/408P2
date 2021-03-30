@@ -92,8 +92,10 @@ class Pi {
         for (String name : graphMap.keySet()) {
             ArrayList list = graphMap.get(name);
             for (String func : list) {
-                list.remove(func);
+                if (func.equals(name)) continue;
                 ArrayList toAdd = graphMap.get(func);
+                if (toAdd == null) continue;
+                list.remove(func);
                 list.addAll(toAdd);
             }
             ArrayList<String> listUnique = new ArrayList<>(new HashSet<>(list));
