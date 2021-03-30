@@ -18,6 +18,11 @@ class Pi {
     public static int t_support = 3;
     public static double t_confidence = 65;
 
+    /**
+     * populate graphMap and useMap
+     * @param args
+     */
+
     public static void main(String[] args) {
 
         if (args.length == 4) {
@@ -39,9 +44,11 @@ class Pi {
             String tmpScopeName = "";
             while (reader.hasNextLine()) {
                 String line = reader.nextLine();
+
                 //uncomment below to see call graph
                 //System.out.println(line);
 
+                //keep track of null function and treat accordingly
                 if (line.contains("<<null function>>")) {
                     readNullFunction = true;
                 } else if (readNullFunction && !line.isEmpty()) {
@@ -51,6 +58,7 @@ class Pi {
                     readNullFunction = false;
                 }
 
+                //add scope header as a key in usesMap
                 if (isScopeHeader(line)) {
                     readToScope = true;
                     String scopeName = getScopeName(line);
@@ -65,6 +73,7 @@ class Pi {
                         usesMap.put(scopeName, uses - 1);
                     }
 
+                    //add function to corresponding value list in usesMap
                 } else if (readToScope && !line.isEmpty()) {
                     if (!line.contains("external node")) {
                         String funcName = getScopeName(line);
@@ -77,6 +86,7 @@ class Pi {
                             }
 
                         }
+                        //add to graphMap
                         graphMap.get(tmpScopeName).add(funcName);
                     }
                 } else {
@@ -102,6 +112,7 @@ class Pi {
             graphMap.put(name, listUnique);
         }
 
+        //edit usesMap to handle null function
         for (String name : usesMap.keySet()) {
             String key = name.toString();
             if (!nullFunctionList.contains(key)) {
@@ -116,29 +127,52 @@ class Pi {
         P.permute();
     }
 
+    /**
+     * get uses map
+     * @return
+     */
     public static HashMap<String, Integer> getUsesMap() {
         return usesMap;
     }
 
+    /**
+     * get graph map
+     * @return
+     */
     public static HashMap<String, ArrayList<String>> getGraphMap() {
         return graphMap;
     }
 
+    /**
+     * get t_support
+     * @return
+     */
     public static int getTSupport() {
         return t_support;
     }
 
-    //helper method for main()
+    /**
+     * helper method for main()
+     * checks if line is a scope header
+     * @param line
+     * @return
+     */
     private static boolean isScopeHeader(String line) {
         return (line.length() > 1) && (line.substring(0, 4).equals("Call")) && (!line.contains("null function"));
     }
 
+    /**
+     * printing usage message
+     */
     private static void printUsageMessage() {
         System.out.println("Run pipair.sh with args <example.bc>, or <example.bc> <T_support> <T_confidence>");
-        System.out.println("Default: T_support=3, T_confidece=65");
+        System.out.println("Default: T_support=3, T_confidence=65");
     }
 
-    //for testing only
+    /**
+     * print uses map
+     * for testing purposes
+     */
     public static void printUsesMap() {
         System.out.println("printing Uses HashMap");
         for (String name : usesMap.keySet()) {
@@ -149,7 +183,10 @@ class Pi {
         System.out.println("\n");
     }
 
-    //for testing only
+    /**
+     * print graph map
+     * for testing purposes
+     */
     public static void printGraphMap() {
         System.out.println("printing Graph HashMap");
         for (String name : graphMap.keySet()) {
@@ -160,7 +197,11 @@ class Pi {
         System.out.println("\n");
     }
 
-    //extract name from line
+    /**
+     * get scope name from line of call graph
+     * @param line
+     * @return
+     */
     private static String getScopeName(String line) {
         String name = null;
         if (line.contains("\'")) {
@@ -171,7 +212,11 @@ class Pi {
         return name;
     }
 
-    //extract usage number from line
+    /**
+     * get usage number from line of call graph
+     * @param line
+     * @return
+     */
     private static int getFuncUses(String line) {
         int startIndex = line.indexOf("#uses=");
         String usesStr = line.substring(startIndex + 6, line.length());
