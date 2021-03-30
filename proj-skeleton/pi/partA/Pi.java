@@ -14,28 +14,40 @@ class Pi {
     public static HashMap<String, ArrayList<String>> graphMap = new HashMap<>();
     public static HashMap<String, Integer> usesMap = new HashMap<>();
     public static int t_support = 3;
-    public static double t_confidence = 0.65;
+    public static double t_confidence = 65;
 
     public static void main(String[] args) {
 
-        if(args.length == 4) {
+        if (args.length == 4) {
             t_support = Integer.valueOf(args[2]);
             t_confidence = Double.valueOf(args[3]);
-        }
-        else if(args.length != 2){
+        } else if (args.length != 2) {
             printUsageMessage();
             return;
         }
+
+        ArrayList<String> nullFunctionList = new ArrayList();
 
         try {
             File graph = new File(args[0]);
             Scanner reader = new Scanner(graph);
             boolean readToScope = false;
+            boolean readNullFunction = false;
+
             String tmpScopeName = "";
             while (reader.hasNextLine()) {
                 String line = reader.nextLine();
                 //uncomment below to see call graph
-                System.out.println(line);
+                //System.out.println(line);
+
+                if (line.contains("<<null function>>")) {
+                    readNullFunction = true;
+                } else if (readNullFunction && !line.isEmpty()) {
+                    String funcName = getScopeName(line);
+                    nullFunctionList.add(funcName);
+                } else {
+                    readNullFunction = false;
+                }
 
                 if (isScopeHeader(line)) {
                     readToScope = true;
@@ -45,11 +57,24 @@ class Pi {
                     tmpScopeName = scopeName;
 
                     int uses = getFuncUses(line);
-                    usesMap.put(scopeName, uses);
+                    if (usesMap.containsKey(scopeName)) {
+                        usesMap.put(scopeName, usesMap.get(scopeName) + (uses - 1));
+                    } else {
+                        usesMap.put(scopeName, uses - 1);
+                    }
 
                 } else if (readToScope && !line.isEmpty()) {
                     if (!line.contains("external node")) {
                         String funcName = getScopeName(line);
+                        //adjust uses to not count duplicates
+                        if (graphMap.get(tmpScopeName).contains(funcName)) {
+                            if (usesMap.containsKey(funcName)) {
+                                usesMap.put(funcName, usesMap.get(funcName) - 1);
+                            } else {
+                                usesMap.put(funcName, -1);
+                            }
+
+                        }
                         graphMap.get(tmpScopeName).add(funcName);
                     }
                 } else {
@@ -61,40 +86,30 @@ class Pi {
             System.out.println("File not found");
         }
 
+
+        for (String name : usesMap.keySet()) {
+            String key = name.toString();
+            if (!nullFunctionList.contains(key)) {
+                usesMap.put(key, usesMap.get(key) + 1);
+            }
+        }
         //uncomment below to see each hashMap
-        printUsesMap();
-        printGraphMap();
+        //printUsesMap();
+        //printGraphMap();
 
         Permutations P = new Permutations(graphMap, usesMap, t_support, t_confidence);
         P.permute();
-        System.out.println("testing support");
-        System.out.println("Support A,B = " + P.calculateSupport("A", "B"));
-        System.out.println("Support A,C = " + P.calculateSupport("A", "C"));
-        System.out.println("Support A,D = " + P.calculateSupport("A", "D"));
-        System.out.println("Support B,C = " + P.calculateSupport("B", "C"));
-        System.out.println("Support B,D = " + P.calculateSupport("B", "D"));
-        System.out.println("Support C,D = " + P.calculateSupport("C", "D"));
-        System.out.println("");
-
-        System.out.println("testing confidence");
-        ArrayList<String> ListA = new ArrayList();
-        ArrayList<String> ListB = new ArrayList();
-        ListA.add("A");
-        ListA.add("B");
-        ListB.add("A");
-        
-        System.out.println("Confidence A,B = " + P.calculateConfidence(ListA, ListB));
     }
 
-    public static HashMap<String, Integer> getUsesMap(){
+    public static HashMap<String, Integer> getUsesMap() {
         return usesMap;
     }
 
-    public static HashMap<String, ArrayList<String>> getGraphMap(){
+    public static HashMap<String, ArrayList<String>> getGraphMap() {
         return graphMap;
     }
 
-    public static int getTSupport(){
+    public static int getTSupport() {
         return t_support;
     }
 
@@ -103,7 +118,7 @@ class Pi {
         return (line.length() > 1) && (line.substring(0, 4).equals("Call")) && (!line.contains("null function"));
     }
 
-    private static void printUsageMessage(){
+    private static void printUsageMessage() {
         System.out.println("Run pipair.sh with args <example.bc>, or <example.bc> <T_support> <T_confidence>");
         System.out.println("Default: T_support=3, T_confidece=65");
     }
