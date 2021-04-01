@@ -64,8 +64,6 @@ class Permutations {
             return 0.0;
         }
         double confidence = (double) set1Support / (double) set2Support;
-        //uncomment below for testing
-        //System.out.println("------" + set1.toString() + "support: " + set1Support + ", conf: " + confidence + ", A uses: " + countOccurences(set1.get(0)) + ", B uses: " + countOccurences(set1.get(1)));
         return confidence;
     }
 
@@ -81,14 +79,6 @@ class Permutations {
             pair.add(functionA);
         }
         return pair;
-    }
-
-    public ArrayList<String> removeDuplicates(ArrayList<String> list) {
-        if (list.size() < 2) {
-            return list;
-        }
-        ArrayList<String> listUnique = new ArrayList<>(new HashSet<>(list));
-        return listUnique;
     }
 
     //for testing only
@@ -111,7 +101,7 @@ class Permutations {
     public void permute() {
         for (String name : graphMap.keySet()) {
             String key = name.toString();
-            ArrayList<String> val = removeDuplicates(graphMap.get(name));
+            ArrayList<String> val = graphMap.get(name);
 
             if (val.size() < 2) {
                 continue;
@@ -144,6 +134,14 @@ class Permutations {
         }
     }
 
+    /**
+     * Method to locate all potential bugs and pass them to findBugs()
+     * Bug is defined as when an individual function is called where
+     * it is typically called with a pair
+     *
+     * @param set1
+     * @param support
+     */
     public void identifyBugs(ArrayList<String> set1, ArrayList<String> set2, int set1Support) {
         double confidence = calculateConfidence(set1, set2, set1Support);
         if (confidence == 0.0) return;
