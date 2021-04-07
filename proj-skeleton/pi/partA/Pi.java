@@ -15,7 +15,6 @@ class Pi {
     private static HashMap<String, ArrayList<String>> graphMapExpanded = new HashMap<>();
     private static int t_support = 3;
     private static double t_confidence = 65;
-    private static boolean expand = false;
 
     /**
      * populate graphMap and useMap
@@ -24,20 +23,11 @@ class Pi {
      */
 
     public static void main(String[] args) {
-        if (args.length == 5) {
+        if (args.length == 4) {
             t_support = Integer.valueOf(args[2]);
             t_confidence = Double.valueOf(args[3]);
-            if (args[4].contains("expand")) {
-                expand = true;
-            }
-        } else if (args.length == 4) {
-            t_support = Integer.valueOf(args[2]);
-            t_confidence = Double.valueOf(args[3]);
-        } else if (args.length == 3) {
-            if (args[2].contains("expand")) {
-                expand = true;
-            }
-        } else if (args.length != 2) {
+        }
+        else if (args.length != 2) {
             printUsageMessage();
             return;
         }
