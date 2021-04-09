@@ -116,11 +116,12 @@ class Pi {
      */
     public static void printUsesMap() {
         System.out.println("printing Uses HashMap");
-        for (String name : usesMap.keySet()) {
-            String key = name.toString();
-            String val = usesMap.get(name).toString();
+        for ( Map.Entry< String, Integer > entry : usesMap.entrySet() ) {
+            String key = entry.getKey();
+            String val = entry.getValue().toString();
             System.out.println(key + " " + val);
         }
+
         System.out.println("\n");
     }
 
@@ -130,9 +131,9 @@ class Pi {
      */
     public static void printGraphMap() {
         System.out.println("printing graph HashMap");
-        for (String name : graphMap.keySet()) {
-            String key = name.toString();
-            String val = graphMap.get(name).toString();
+        for ( Map.Entry< String, ArrayList<String> > entry : graphMap.entrySet() ) {
+            String key = entry.getKey();
+            String val = entry.getValue().toString();
             System.out.println(key + " " + val);
         }
         System.out.println("\n");

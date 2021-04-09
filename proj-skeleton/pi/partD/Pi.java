@@ -16,6 +16,7 @@ class Pi {
     private static int t_support = 3;
     private static double t_confidence = 65;
     private static int t_distance = Integer.MAX_VALUE;
+    private static ArrayList<String> functionsToIgnore = new ArrayList<String>();
 
     /**
      * populate graphMap and useMap
@@ -24,20 +25,50 @@ class Pi {
      */
 
     public static void main(String[] args) {
-        if (args.length == 5) {
-            t_support = Integer.valueOf(args[2]);
-            t_confidence = Double.valueOf(args[3]);
-            t_distance = Integer.valueOf(args[4]);
-        } else if (args.length == 4) {
-            t_support = Integer.valueOf(args[2]);
-            t_confidence = Double.valueOf(args[3]);
-        } else if (args.length == 3) {
-            t_distance = Integer.valueOf(args[2]);
-        } else if (args.length != 2) {
-            printUsageMessage();
-            return;
+        functionsToIgnore.add("");
+        int ignoreIndex = -1;
+        for (int i = 2; i < args.length; i++) {
+            if (args[i].contains("ignore")) {
+                ignoreIndex = i;
+                break;
+            }
         }
-        if(t_distance < 0){
+
+
+        if (ignoreIndex != -1) { //user included ignore parameter
+            for (int i = ignoreIndex + 1; i < args.length; i++) {
+                functionsToIgnore.add(args[i]);
+            }
+            if (ignoreIndex == 5) {
+                t_support = Integer.valueOf(args[2]);
+                t_confidence = Double.valueOf(args[3]);
+                t_distance = Integer.valueOf(args[4]);
+            } else if (ignoreIndex == 4) {
+                t_support = Integer.valueOf(args[2]);
+                t_confidence = Double.valueOf(args[3]);
+            } else if (ignoreIndex == 3) {
+                t_distance = Integer.valueOf(args[2]);
+            } else if (ignoreIndex != 2) {
+                printUsageMessage();
+                return;
+            }
+        } else {
+            if (args.length == 5) {
+                t_support = Integer.valueOf(args[2]);
+                t_confidence = Double.valueOf(args[3]);
+                t_distance = Integer.valueOf(args[4]);
+            } else if (args.length == 4) {
+                t_support = Integer.valueOf(args[2]);
+                t_confidence = Double.valueOf(args[3]);
+            } else if (args.length == 3) {
+                t_distance = Integer.valueOf(args[2]);
+            } else if (args.length != 2) {
+                printUsageMessage();
+                return;
+            }
+        }
+
+        if (t_distance < 0) {
             printUsageMessage();
             return;
         }
@@ -73,12 +104,14 @@ class Pi {
                 }
             }
             reader.close();
-        } catch (FileNotFoundException e) {
+        } catch (
+                FileNotFoundException e) {
             System.out.println("File not found");
         }
 
         fillUsesMap(graphMap);
-        Permutations P = new Permutations(graphMap, usesMap, t_support, t_confidence, t_distance);
+
+        Permutations P = new Permutations(graphMap, usesMap, t_support, t_confidence, t_distance, functionsToIgnore);
         P.permute();
     }
 
