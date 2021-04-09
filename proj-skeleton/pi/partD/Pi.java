@@ -27,13 +27,12 @@ class Pi {
     public static void main(String[] args) {
         functionsToIgnore.add("");
         int ignoreIndex = -1;
-        for (int i = 2; i < args.length; i++) {
+        for (int i = 1; i < args.length; i++) {
             if (args[i].contains("ignore")) {
                 ignoreIndex = i;
                 break;
             }
         }
-
 
         if (ignoreIndex != -1) { //user included ignore parameter
             for (int i = ignoreIndex + 1; i < args.length; i++) {
@@ -110,7 +109,6 @@ class Pi {
         }
 
         fillUsesMap(graphMap);
-
         Permutations P = new Permutations(graphMap, usesMap, t_support, t_confidence, t_distance, functionsToIgnore);
         P.permute();
     }
