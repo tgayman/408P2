@@ -11,7 +11,7 @@ import java.util.*;
 
 class Pi {
     private static HashMap<String, ArrayList<String>> graphMap = new HashMap<String, ArrayList<String>>();
-    private static HashMap<String, Integer> usesMap = new HashMap<String, ArrayList<String>>();
+    private static HashMap<String, Integer> usesMap = new HashMap<String, Integer>();
     private static HashMap<String, ArrayList<String>> graphMapExpanded = new HashMap<String, ArrayList<String>>();
     private static int t_support = 3;
     private static double t_confidence = 65;
