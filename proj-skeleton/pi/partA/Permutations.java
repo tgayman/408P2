@@ -137,9 +137,9 @@ class Permutations {
                 continue;
             }
             ArrayList<String> set1 = pair;
-            ArrayList<String> set2 = new ArrayList<>(List.of(pair.get(0)));
+            ArrayList<String> set2 = Arrays.asList(pair.get(0));
             identifyBugs(set1, set2, set1Support);
-            ArrayList<String> set2Switch = new ArrayList<>(List.of(pair.get(1)));
+            ArrayList<String> set2Switch = Arrays.asList(pair.get(1));
             identifyBugs(set1, set2Switch, set1Support);
         }
     }
