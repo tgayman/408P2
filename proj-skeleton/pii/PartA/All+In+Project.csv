@@ -1,7 +1,0 @@
-﻿CID,Type,Impact,First Detected,Owner,Classification,Severity,Action,Component,Category
-11095,WMI: Inefficient Map Iterator,Low,04/09/21,Unassigned,Unclassified,Unspecified,Undecided,Other,SpotBugs: Performance
-11094,WMI: Inefficient Map Iterator,Low,04/09/21,Unassigned,Unclassified,Unspecified,Undecided,Other,SpotBugs: Performance
-11093,WMI: Inefficient Map Iterator,Low,04/09/21,Unassigned,Unclassified,Unspecified,Undecided,Other,SpotBugs: Performance
-11092,WMI: Inefficient Map Iterator,Low,04/09/21,Unassigned,Unclassified,Unspecified,Undecided,Other,SpotBugs: Performance
-11091,WMI: Inefficient Map Iterator,Low,04/09/21,Unassigned,Unclassified,Unspecified,Undecided,Other,SpotBugs: Performance
-10002,Dm: Dubious method used,Low,10/02/19,Unassigned,Unclassified,Unspecified,Undecided,Other,SpotBugs: Internationalization
