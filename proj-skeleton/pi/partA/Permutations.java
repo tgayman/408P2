@@ -9,9 +9,8 @@ class Permutations {
     private final int T_SUPPORT;
     private final double T_CONFIDENCE;
     private static DecimalFormat df2 = new DecimalFormat("##.00");
-    private static ArrayList<String> functionsToIgnore;
 
-    public Permutations(HashMap<String, ArrayList<String>> graph, HashMap<String, Integer> uses, int support, double confidence, ArrayList<String> funcs) {
+    public Permutations(HashMap<String, ArrayList<String>> graph, HashMap<String, Integer> uses, int support, double confidence) {
         graphMap = graph;
         usesMap = uses;
         T_SUPPORT = support;
@@ -150,11 +149,6 @@ class Permutations {
         double confidence = calculateConfidence(set1, set2, set1Support);
         if (confidence == 0.0) return;
         if (confidence >= T_CONFIDENCE) {
-            //check to make sure the functions are not in the ignore list set by user
-            for (String func : functionsToIgnore) {
-                if (set1.contains(func) || set2.contains(func))
-                    return;
-            }
             //potential bug, calculate support
             findBugs(set1, set2, set1Support, confidence);
         }
