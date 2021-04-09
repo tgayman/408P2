@@ -15,7 +15,7 @@ class Permutations {
         usesMap = uses;
         T_SUPPORT = support;
         T_CONFIDENCE = confidence / 100.0;
-        permutationsMap = new HashMap<>();
+        permutationsMap = new HashMap<ArrayList<String>, Integer>();
     }
 
     /**
